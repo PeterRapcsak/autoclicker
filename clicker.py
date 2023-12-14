@@ -8,7 +8,7 @@ toggle_key = KeyCode.from_char(char="0")
 mouse = Controller()
 click_thread = None
 clicking = False
-click_frequency = 0.01  # Default frequency
+click_frequency = 0.01 
 
 def click_action():
     global clicking, click_frequency
@@ -23,7 +23,7 @@ def on_press(key):
         if clicking:
             clicking = False
             if click_thread:
-                click_thread.join()  # Wait for the click thread to finish
+                click_thread.join()
         else:
             clicking = True
             click_thread = threading.Thread(target=click_action)
@@ -38,9 +38,12 @@ def save_toggle_key(entry, label1, btn, frequency_slider, label2):
     except AttributeError:
         label1.configure(text="Invalid key")
 
-    click_frequency = frequency_slider.get()  # Update click frequency
+    click_frequency = frequency_slider.get()
     label2.configure(text=f"Frequency: {round(click_frequency, 6)}s")
     print(f"Click frequency set to: {click_frequency}")
+
+
+
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -49,27 +52,23 @@ app = customtkinter.CTk()
 app.geometry("480x480")
 app.title("Autoclicker")
 
-# Label to display the current toggle key
 toggle_key_label = customtkinter.CTkLabel(app, text=f"Current Toggle Key: {toggle_key.char}")
 toggle_key_label.pack(padx=10, pady=10)
 
-# Entry widget for user input
 entry = customtkinter.CTkEntry(app)
+entry.insert(0, "0")
 entry.pack(padx=10, pady=10)
 
-# Button to save the changes
 save_btn = customtkinter.CTkButton(app, text="Save", command=lambda: save_toggle_key(entry, toggle_key_label, save_btn, frequency_slider, frequency_label))
 save_btn.pack(padx=10, pady=10)
 
-# Slider for setting the click frequency
 frequency_slider = customtkinter.CTkSlider(app, from_=1, to=0.00001)
-frequency_slider.set(0.1)  # Set initial value
+frequency_slider.set(0.1)
 frequency_slider.pack(padx=10, pady=10)
 
 frequency_label = customtkinter.CTkLabel(app, text=f"Frequency: {click_frequency}s")
 frequency_label.pack(padx=10, pady=10)
 
-# Start the keyboard listener in a separate thread
 listener_thread = threading.Thread(target=Listener(on_press=on_press).start)
 listener_thread.start()
 
